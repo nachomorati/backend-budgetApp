@@ -69,7 +69,6 @@ export const updateIncome = async (req, res) => {
 export const deleteIncome = async (req, res) => {
   const { uid } = req
   const { incomeId } = req.params
-  console.log(uid, incomeId)
   try {
     const deleted = await Income.findOneAndDelete({
       _id: incomeId,
