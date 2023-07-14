@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ruta protegida</title>
+  </head>
+  <body>
+    <div id="app">
+      <h2>Email</h2>
+      <h3>UID</h3>
+    </div>
+    <button id="logout">Logout</button>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', async (e) => {
+        const app = document.querySelector('#app')
+        try {
+          const resToken = await fetch('/api/v1/auth/refresh', {
+            credentials: 'include',
+          })
+          console.log(resToken.ok, resToken.status)
+          const { token } = await resToken.json()
+          console.log(token)
+          const res = await fetch('/api/v1/auth/protected', {
+            headers: {
+              Authorization: 'Basic ' + token,
+            },
+          })
+          console.log(res.ok, res.status)
+          if (!res.ok) {
+            window.location.href = '/'
+          }
+          const { user } = await res.json()
+          console.log(user)
+          app.innerHTML = `
+            <h2>Email: ${user.email}</h2>
+            <h3>UID: ${user._id}</h3>`
+        } catch (error) {
+          console.log(error)
+        }
+      })
+    </script>
+  </body>
+</html>
